@@ -43,6 +43,12 @@ pip install "elevenlabs[pyaudio]"
 
 
 
+
+
+
+
+
+
 GROQ_API_KEY=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
 ELEVENLABS_API_KEY=sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72
 ELEVENLABS_VOICE_ID=onwK4e9ZLuTAKqWW03F9
