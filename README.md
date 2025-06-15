@@ -85,11 +85,6 @@ curl -X POST "https://api.elevenlabs.io/v1/text-to-speech/onwK4e9ZLuTAKqWW03F9" 
 
 
 
-
-
-
-
-
   curl -X POST "https://api.elevenlabs.io/v1/text-to-speech/gbTn1bmCvNgk0QEAVyfM"  \
   -H "Content-Type: application/json" \
   -H "xi-api-key: sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72" \

@@ -1,41 +1,62 @@
+from flask import Flask, render_template, request, jsonify
+import requests
 import os
-import signal
-import sys
 
-from elevenlabs.client import ElevenLabs
-from elevenlabs.conversational_ai.conversation import Conversation
-from elevenlabs.conversational_ai.default_audio_interface import DefaultAudioInterface
+ELEVENLABS_API_KEY = ("sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72")
+VOICE_ID = ("gbTn1bmCvNgk0QEAVyfM", "gbTn1bmCvNgk0QEAVyfM")
 
-def main():
-    AGENT_ID=os.environ.get('AGENT_ID')
-    API_KEY=os.environ.get('ELEVENLABS_API_KEY')
+app = Flask(__name__)
 
-    if not AGENT_ID:
-        sys.stderr.write("AGENT_ID environment variable must be set\n")
-        sys.exit(1)
-    
-    if not API_KEY:
-        sys.stderr.write("ELEVENLABS_API_KEY not set, assuming the agent is public\n")
+# Tus claves (guarda esto en variables de entorno en producción)
+ELEVENLABS_API_KEY = "sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72"
+VOICE_ID = "gbTn1bmCvNgk0QEAVyfM"  # Puedes elegir alguna voz de ElevenLabs
 
-    client = ElevenLabs(api_key=API_KEY)
-    conversation = Conversation(
-        client,
-        AGENT_ID,
-        # Assume auth is required when API_KEY is set
-        requires_auth=bool(API_KEY),
-        audio_interface=DefaultAudioInterface(),
-        callback_agent_response=lambda response: print(f"Agent: {response}"),
-        callback_agent_response_correction=lambda original, corrected: print(f"Agent: {original} -> {corrected}"),
-        callback_user_transcript=lambda transcript: print(f"User: {transcript}"),
-        # callback_latency_measurement=lambda latency: print(f"Latency: {latency}ms"),
-    )
-    conversation.start_session()
+# Lista de historias de terror predefinidas
+stories = [
+    "Una noche fría, escuchaste pasos detrás de ti... pero no había nadie.",
+    "Alguien llamó a tu puerta a las 3 AM. Al abrir, solo viste tus propias huellas de sangre regresando hacia adentro.",
+    "Despertaste y notaste que alguien te observaba desde el espejo. No era tu reflejo.",
+    "Recibiste un mensaje de texto de tu yo futuro advirtiéndote que no salgas de tu casa nunca más."
+]
 
-    # Run until Ctrl+C is pressed.
-    signal.signal(signal.SIGINT, lambda sig, frame: conversation.end_session())
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-    conversation_id = conversation.wait_for_session_end()
-    print(f"Conversation ID: {conversation_id}")
+@app.route("/generate-story", methods=["POST"])
+def generate_story():
+    story = stories[random.randint(0, len(stories) - 1)]
+    return jsonify({"story": story})
 
-if _name_ == '_main_':
-    main()
+@app.route("/generate-audio", methods=["POST"])
+def generate_audio():
+    data = request.get_json()
+    text = data["text"]
+
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/gbTn1bmCvNgk0QEAVyfM" 
+    headers = {
+        "Accept": "audio/mpeg",
+        "Content-Type": "application/json",
+        "xi-api-key": sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72
+    }
+    body = {
+        "text": text,
+        "model_id": "eleven_monolingual_v1",
+        "voice_settings": {
+            "stability": 0.5,
+            "similarity_boost": 0.75
+        }
+    }
+
+    response = requests.post(url, json=body, headers=headers)
+    if response.status_code != 200:
+        return jsonify({"error": "Error generando audio"}), 500
+
+    return response.content, response.headers['Content-Type']
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
