@@ -28,7 +28,7 @@ sudo apt-get install libportaudio2 libportaudiocpp0 portaudio19-dev libasound-de
 
 Bueno, la instalamos porque si nuestro sistema no tiene librerías como la que le estamos instalando**, nos lanzará un error como este:
 
-![Error de PyAudio](imagenes_mk/errorpyaudio.png)
+![Error de PyAudio](errorpyaudio.png)
 
 ## Paso 4:
 Instalamos la implementación de "*entrada y salida de audio" para que podamos hacer nuestro "prompt*" por voz:
