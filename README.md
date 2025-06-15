@@ -1,5 +1,48 @@
 # IA-pract
 #
+Primero, buscamos más que nada un proyecto interesante, en el cual queremos que nuestra IA pueda contarnos historias de terror, especificamente sobre México, la que sea, aunque sabemos perfectamente que no nos gustaría que simplemente le escribamos y esta nos platique lo que le decimos, sino que queremos que nuestra IA nos escuche y esta nos pueda platicar leyendas de terror mexicanas
+
+Para ello, hicimos algo arriesgado pero que podría salir satisfactorio, asi que nos movimos de la interfaz de IA "*Groq" y buscamos una adecuada para nuestro proyecto, es así que al investigar, nos movimos a "EvenLabs*".
+Esta plataforma nos podrá ayudar a hablarle a la *IA* y que está nos pueda contestar el "*prompt*".
+
+## Paso 1:
+Instalamos "*EvenLabs*" para python desde la terminal:
+
+`shell
+pip install elevenlabs
+`
+
+## Paso 2:
+Actualizamos nuestro *apt* para poder instalar la versión más reciente de nuestra dependencia *PortAudio*:
+
+`shell
+sudo apt-get update
+`
+
+## Paso 3:
+Instalamos la dependecia como "*libportaudio2, libportaudiocpp0, portaudio19-dev, libasound-dev, libsndfile1-dev*", esto para que PyAudio pueda compilarse e instalarse correctamente:
+`shell
+sudo apt-get install libportaudio2 libportaudiocpp0 portaudio19-dev libasound-dev libsndfile1-dev -y
+`
+¿Por qué lo instalamos? ¡Buena pregunta!
+
+Bueno, la instalamos porque si nuestro sistema no tiene librerías como la que le estamos instalando**, nos lanzará un error como este:
+
+![Error de PyAudio](imagenes_mk/errorpyaudio.png)
+
+## Paso 4:
+Instalamos la implementación de "*entrada y salida de audio" para que podamos hacer nuestro "prompt*" por voz:
+
+`shell
+pip install "elevenlabs[pyaudio]"
+`
+
+
+
+
+
+
+
 GROQ_API_KEY=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
 ELEVENLABS_API_KEY=sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72
 ELEVENLABS_VOICE_ID=onwK4e9ZLuTAKqWW03F9
