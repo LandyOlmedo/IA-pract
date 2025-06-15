@@ -1,0 +1,6 @@
+*.pyc
+__pycache__
+env/
+*.env
+*.log
+ELEVENLABS_API_KEY

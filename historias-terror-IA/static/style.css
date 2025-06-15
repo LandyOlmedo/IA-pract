@@ -1,0 +1,33 @@
+body {
+  background-color: #111;
+  color: white;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+  padding: 30px;
+  border: 2px solid red;
+  border-radius: 10px;
+  background-color: #222;
+  max-width: 600px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+#story {
+  margin-top: 20px;
+  min-height: 100px;
+}
