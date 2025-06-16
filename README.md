@@ -5,224 +5,188 @@ Primero, buscamos más que nada un proyecto interesante, en el cual queremos que
 Para ello, hicimos algo arriesgado pero que podría salir satisfactorio, asi que nos movimos de la interfaz de IA "*Groq" y buscamos una adecuada para nuestro proyecto, es así que al investigar, nos movimos a "EvenLabs*".
 Esta plataforma nos podrá ayudar a hablarle a la *IA* y que está nos pueda contestar el "*prompt*".
 
-## Paso 1:
-Instalamos "*EvenLabs*" para python desde la terminal:
+# Explicación básica del código (línea por línea)
 
-`shell
-pip install elevenlabs
-`
+---
 
-## Paso 2:
-Actualizamos nuestro *apt* para poder instalar la versión más reciente de nuestra dependencia *PortAudio*:
+## 1. Importar las librerías necesarias
 
-`shell
-sudo apt-get update
-`
-
-## Paso 3:
-Instalamos la dependecia como "*libportaudio2, libportaudiocpp0, portaudio19-dev, libasound-dev, libsndfile1-dev*", esto para que PyAudio pueda compilarse e instalarse correctamente:
-`shell
-sudo apt-get install libportaudio2 libportaudiocpp0 portaudio19-dev libasound-dev libsndfile1-dev -y
-`
-¿Por qué lo instalamos? ¡Buena pregunta!
-
-Bueno, la instalamos porque si nuestro sistema no tiene librerías como la que le estamos instalando**, nos lanzará un error como este:
-
-![Error de PyAudio](errorpyaudio.png)
-
-## Paso 4:
-Instalamos la implementación de "*entrada y salida de audio" para que podamos hacer nuestro "prompt*" por voz:
-
-`shell
-pip install "elevenlabs[pyaudio]"
-`
-
-
-
-
-
-
-
-
-
-
-
-
-
-GROQ_API_KEY=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
-ELEVENLABS_API_KEY=sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72
-ELEVENLABS_VOICE_ID=onwK4e9ZLuTAKqWW03F9
-
-
-
-
-curl -X POST "https://api.groq.com/openai/v1/audio/speech" \
-  -H "Content-Type: application/json" \
-    -H "Authorization         "text": "Here are three famous Mexican horror legends, each summarized in about 10 seconds:\n\n---\n\n*1. La Llorona (The Weeping Woman)*  \nA vengeful spirit of a mother who drowned her children in a river after her lover betrayed her. Now, she wanders at night, wailing \"¡Ay, mis hijos!\" Her ghost lures people to the water to drown them. Ignoring her cries or approaching her means certain doom.  \n\n---\n\n*2. La Siguanaba (The Deceptive Hag)*  \nAn old woman with long hair who lures men into the forest. If you glimpse her face, it’s hideously distorted. Linked to the Apeninos (forest spirits), she’s often seen near rivers, warning that curiosity about her appearance brings terror.  \n\n---\n\n*3. El Sombrerón (The Wide-Hat Stranger)*  \nA towering, shadowy figure in a wide-brimmed hat who stalks lonely roads. He demands travelers tell a story; if they fail, he steals their soul. Some say he’s a demon testing faith, others a guardian of secrets. Avoid his gaze and keep your stories sharp!  \n\n--- \n\nEach legend blends tragedy, mystery, and a haunting moral lesson. ¡Cuidado!",
-: Bearer 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" \
-      -d '{
-               "model": "playai-tts",
-                        "voice": "Arista-PlayAI",
-                                 "input": "Here are three famous Mexican horror legends, each summarized in about 10 seconds:\n\n---\n\n*1. La Llorona (The Weeping Woman)*  \nA vengeful spirit of a mother who drowned her children in a river after her lover betrayed her. Now, she wanders at night, wailing \"¡Ay, mis hijos!\" Her ghost lures people to the water to drown them. Ignoring her cries or approaching her means certain doom.  \n\n---\n\n*2. La Siguanaba (The Deceptive Hag)*  \nAn old woman with long hair who lures men into the forest. If you glimpse her face, it’s hideously distorted. Linked to the Apeninos (forest spirits), she’s often seen near rivers, warning that curiosity about her appearance brings terror.  \n\n---\n\n*3. El Sombrerón (The Wide-Hat Stranger)*  \nA towering, shadowy figure in a wide-brimmed hat who stalks lonely roads. He demands travelers tell a story; if they fail, he steals their soul. Some say he’s a demon testing faith, others a guardian of secrets. Avoid his gaze and keep your stories sharp!  \n\n--- \n\nEach legend blends tragedy, mystery, and a haunting moral lesson. ¡Cuidado!",
-                                          "response_format": "wav"
-                                                 }' \
-                                                   --output out.wav
-
-
-
-
-
-
-
-
-
-curl -X POST "https://api.elevenlabs.io/v1/text-to-speech/onwK4e9ZLuTAKqWW03F9"  \
-  -H "Content-Type: application/json" \
-  -H "xi-api-key: sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72" \
-  -d '{
-         "model_id": "eleven_monolingual_v1",
-         "voice_settings": {
-           "stability": 0.5,
-           "similarity_boost": 0.75
-         }
-       }' \
-  --output out.wav
-
-
-
-
-  curl -X POST "https://api.elevenlabs.io/v1/text-to-speech/gbTn1bmCvNgk0QEAVyfM"  \
-  -H "Content-Type: application/json" \
-  -H "xi-api-key: sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72" \
-  -d '{
-         "text": "Aquí tienes tres leyendas horripilantes de México, cada una resumida en unos 10 segundos:\n\n---\n\n*1. La Llorona (La Mujer Llorando)*\nUn espíritu vengativo de una madre que ahogó a sus hijos en un río tras ser abandonada por su amante. Ahora vaga de noche gritando \"¡Ay, mis hijos!\" y atrae a las personas al agua para arrastrarlas. Ignorarla o acercársete puede significar tu perdición.\n\n---\n\n*2. La Siguanaba (La Vieja Engañosa)*\nUna anciana con cabello largo que engaña a los hombres para llevarlos al bosque. Si ves su rostro, es horriblemente deformado. Asociada a los Apeninos, suele aparecer cerca de ríos advirtiendo que mirarla trae terror.\n\n---\n\n*3. El Sombrerón (El Hombre del Sombrero Ancho)*\nUna figura alta y sombría con un sombrero de ala ancha que acecha caminos solitarios. Te exige contar una historia; si fallas, se lleva tu alma. Algunos dicen que es un demonio probando tu fe, otros, un guardián de secretos. Evita su mirada y ten listo un buen cuento.\n\n---\n\nCada leyenda mezcla tragedia, misterio y una moral escalofriante. ¡Cuidado!",
-         "model_id": "eleven_multilingual_v1",
-         "voice_settings": {
-           "stability": 0.5,
-           "similarity_boost": 0.75
-         }
-       }' \
-  --output out_spanish.wav
-
-
-
-
-
-####
-  from flask import Flask, render_template, request, jsonify
+```python
+import os
 import requests
-import os
+```
+- **`import os`**  
+  Permite usar funciones del sistema operativo, como leer claves secretas (API keys) que guardas en tu computadora.
+- **`import requests`**  
+  Permite enviar y recibir información de servicios de internet (APIs), como la IA o la voz.
 
-ELEVENLABS_API_KEY = ("sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72")
-VOICE_ID = ("gbTn1bmCvNgk0QEAVyfM", "gbTn1bmCvNgk0QEAVyfM")
+---
 
-app = Flask(__name__)
+## 2. Configuración de claves y voz
 
-# Tus claves (guarda esto en variables de entorno en producción)
-ELEVENLABS_API_KEY = "sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72"
-VOICE_ID = "awd"  # Puedes elegir alguna voz de ElevenLabs
+```python
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY')
+VOICE_ID = 'gbTn1bmCvNgk0QEAVyfM'  # Cambia este por el tuyo si tienes otro
+```
+- **`GROQ_API_KEY = os.environ.get('GROQ_API_KEY')`**  
+  Busca la clave secreta de Groq (para la IA) en tu sistema.
+- **`ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY')`**  
+  Busca la clave secreta de ElevenLabs (para la voz) en tu sistema.
+- **`VOICE_ID = ...`**  
+  Es el código de la voz que quieres usar para convertir texto en audio.
 
-# Lista de historias de terror predefinidas
-stories = [
-    "Una noche fría, escuchaste pasos detrás de ti... pero no había nadie.",
-    "Alguien llamó a tu puerta a las 3 AM. Al abrir, solo viste tus propias huellas de sangre regresando hacia adentro.",
-    "Despertaste y notaste que alguien te observaba desde el espejo. No era tu reflejo.",
-    "Recibiste un mensaje de texto de tu yo futuro advirtiéndote que no salgas de tu casa nunca más."
-]
+---
 
-@app.route("/")
-def home():
-    return render_template("index.html")
+## 3. Función para pedir respuesta a la IA
 
-@app.route("/generate-story", methods=["POST"])
-def generate_story():
-    story = stories[random.randint(0, len(stories) - 1)]
-    return jsonify({"story": story})
-
-@app.route("/generate-audio", methods=["POST"])
-def generate_audio():
-    data = request.get_json()
-    text = data["text"]
-
-    url = f"https://api.elevenlabs.io/v1/text-to-speech/gbTn1bmCvNgk0QEAVyfM" 
+```python
+def pedir_respuesta(mensaje):
+    # Si no tenemos la llave, mostramos un error
+    if not GROQ_API_KEY:
+        print("No se encontró la clave GROQ_API_KEY.")
+        return ""
+    # Esta es la dirección a donde vamos a mandar el mensaje
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    # Esto dice quiénes somos y qué tipo de datos enviamos
     headers = {
-        "Accept": "audio/mpeg",
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    # Preparamos el mensaje para la IA
+    datos = {
+        "model": "llama3-8b-8192",
+        "messages": [
+            {
+                "role": "user",
+                "content": mensaje
+            }
+        ]
+    }
+    # Enviamos el mensaje y recibimos la respuesta
+    respuesta = requests.post(url, headers=headers, json=datos)
+    respuesta.raise_for_status()
+    respuesta_json = respuesta.json()
+    # Sacamos el texto que nos dio la IA
+    return respuesta_json["choices"][0]["message"]["content"]
+```
+- **`def pedir_respuesta(mensaje):`**  
+  Define una función que le manda un mensaje a la IA y regresa la respuesta.
+- **`if not GROQ_API_KEY:`**  
+  Si no hay clave, muestra un mensaje de error y sale de la función.
+- **`url = ...`**  
+  Es la dirección de internet a la que se manda el mensaje para hablar con la IA.
+- **`headers = {...}`**  
+  Indica quién eres (con tu clave) y el tipo de datos que mandas (JSON).
+- **`datos = {...}`**  
+  Prepara el mensaje para la IA, diciendo qué modelo usar y el contenido del mensaje.
+- **`respuesta = requests.post(...)`**  
+  Manda los datos a la IA y guarda la respuesta.
+- **`respuesta.raise_for_status()`**  
+  Si hubo un error al enviar/recibir, detiene el programa y avisa.
+- **`respuesta_json = respuesta.json()`**  
+  Convierte la respuesta que da la IA a un formato que Python entiende.
+- **`return ...`**  
+  Saca el texto de la respuesta de la IA y lo devuelve.
+
+---
+
+## 4. Función para convertir texto en audio
+
+```python
+def texto_a_audio(texto, nombre_archivo="respuesta.wav"):
+    # Si no tenemos la llave, mostramos un error
+    if not ELEVENLABS_API_KEY:
+        print("No se encontró la clave ELEVENLABS_API_KEY.")
+        return
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
+    headers = {
+        "xi-api-key": ELEVENLABS_API_KEY,
         "Content-Type": "application/json",
-        "xi-api-key": sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72
+        "Accept": "audio/wav"
     }
-    body = {
-        "text": text,
-        "model_id": "eleven_monolingual_v1",
-        "voice_settings": {
-            "stability": 0.5,
-            "similarity_boost": 0.75
-        }
-    }
+    datos = {"text": texto}
+    respuesta = requests.post(url, headers=headers, json=datos)
+    respuesta.raise_for_status()
+    # Guardamos el audio en la computadora
+    with open(nombre_archivo, "wb") as archivo:
+        archivo.write(respuesta.content)
+    print(f"Se guardó el audio como '{nombre_archivo}'")
+```
+- **`def texto_a_audio(texto, nombre_archivo="respuesta.wav"):`**  
+  Define una función que convierte un texto en audio y lo guarda en un archivo.
+- **`if not ELEVENLABS_API_KEY:`**  
+  Si no hay clave, muestra un mensaje de error y sale de la función.
+- **`url = ...`**  
+  Es la dirección de internet a la que se manda el texto para convertirlo en audio.
+- **`headers = {...}`**  
+  Indica tu clave secreta y el formato de datos y audio que quieres.
+- **`datos = {"text": texto}`**  
+  Prepara el texto que quieres convertir en voz.
+- **`respuesta = requests.post(...)`**  
+  Manda el texto a ElevenLabs y recibe el audio.
+- **`respuesta.raise_for_status()`**  
+  Si hubo un error, detiene el programa y avisa.
+- **`with open(nombre_archivo, "wb") as archivo:`**  
+  Abre (o crea) un archivo para guardar el audio.
+- **`archivo.write(respuesta.content)`**  
+  Escribe el audio recibido en el archivo.
+- **`print(f"...")`**  
+  Muestra un mensaje avisando que el archivo de audio fue guardado.
 
-    response = requests.post(url, json=body, headers=headers)
-    if response.status_code != 200:
-        return jsonify({"error": "Error generando audio"}), 500
+---
 
-    return response.content, response.headers['Content-Type']
+## 5. Programa principal (lo que interactúa con el usuario)
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-import os
-import signal
-import sys
-import web
-
-from elevenlabs.client import ElevenLabs
-from elevenlabs.conversational_ai.conversation import Conversation
-from elevenlabs.conversational_ai.default_audio_interface import DefaultAudioInterface
-
+```python
 def main():
-    AGENT_ID=os.environ.get('agent_01jxqt5q71e4ksph7x34p82wk0')
-    API_KEY=os.environ.get('sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72')
+    print("Escribe un mensaje (o escribe 'salir' para terminar):")
+    numero = 1
+    while True:
+        mensaje = input("> ")
+        if mensaje.lower() == "salir":
+            print("¡Hasta luego!")
+            break
+        respuesta = pedir_respuesta(mensaje)
+        print("IA:", respuesta)
+        archivo_audio = f"respuesta_{numero}.wav"
+        texto_a_audio(respuesta, archivo_audio)
+        numero += 1
+```
+- **`def main():`**  
+  Define la función principal del programa.
+- **`print("...")`**  
+  Muestra un mensaje de bienvenida e instrucciones.
+- **`numero = 1`**  
+  Empieza un contador para los archivos de audio.
+- **`while True:`**  
+  Empieza un ciclo que se repite hasta que el usuario escriba "salir".
+- **`mensaje = input("> ")`**  
+  Pide al usuario que escriba un mensaje.
+- **`if mensaje.lower() == "salir":`**  
+  Si escriben "salir", muestra un mensaje de despedida y termina el ciclo.
+- **`respuesta = pedir_respuesta(mensaje)`**  
+  Manda el mensaje a la IA y recibe la respuesta.
+- **`print("IA:", respuesta)`**  
+  Muestra la respuesta de la IA en pantalla.
+- **`archivo_audio = f"respuesta_{numero}.wav"`**  
+  Prepara el nombre para el archivo de audio.
+- **`texto_a_audio(respuesta, archivo_audio)`**  
+  Convierte la respuesta en audio y la guarda en el archivo.
+- **`numero += 1`**  
+  Suma uno al contador para el siguiente archivo.
 
-    if not AGENT_ID:
-        sys.stderr.write("agent_01jxqt5q71e4ksph7x34p82wk0 environment variable must be set\n")
-        sys.exit(1)
-    
-    if not API_KEY:
-        sys.stderr.write("sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72 not set, assuming the agent is public\n")
+---
 
-    client = ElevenLabs(api_key=sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72)
-    conversation = Conversation(
-        client,
-        AGENT_ID,
-        # Assume auth is required when API_KEY is set
-        requires_auth=bool(sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72),
-        audio_interface=DefaultAudioInterface(),
-        callback_agent_response=lambda response: print(f"Agent: {response}"),
-        callback_agent_response_correction=lambda original, corrected: print(f"Agent: {original} -> {corrected}"),
-        callback_user_transcript=lambda transcript: print(f"User: {transcript}"),
-        # callback_latency_measurement=lambda latency: print(f"Latency: {latency}ms"),
-    )
-    conversation.start_session()
+## 6. Punto de inicio del programa
 
-    # Run until Ctrl+C is pressed.
-    signal.signal(signal.SIGINT, lambda sig, frame: conversation.end_session())
-
-    conversation_id = conversation.wait_for_session_end()
-    print(f"Conversation ID: {conversation_id}")
-
-if _name_ == '_main_':
+```python
+if __name__ == "__main__":
     main()
-=======
->>>>>>> f4d28332376c957d5e12bab0b5bc031436c4f05d
+```
+- **`if __name__ == "__main__":`**  
+  Hace que el programa empiece aquí cuando ejecutas el archivo.
+- **`main()`**  
+  Llama a la función principal para que empiece todo el flujo.
+
+---

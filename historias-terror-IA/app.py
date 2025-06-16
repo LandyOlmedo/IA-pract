@@ -1,75 +1,81 @@
 import os
 import requests
 
-# Obtiene las API Keys y el ID de voz desde variables de entorno
+# Configuración:
+# Aquí guardamos nuestras llaves secretas para usar las APIs
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
 ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY')
-VOICE_ID = 'gbTn1bmCvNgk0QEAVyfM'  # Cambia por tu voice_id real de ElevenLabs
+VOICE_ID = 'gbTn1bmCvNgk0QEAVyfM'  # Cambia este por el tuyo si tienes otro
 
-def obtener_respuesta_groq(mensaje_usuario):
-#Envía el mensaje del usuario a la API de Groq y devuelve la respuesta generada por el modelo.
+# Función para pedir respuesta a la IA
+
+def pedir_respuesta(mensaje):
+    # Si no tenemos la llave, mostramos un error
     if not GROQ_API_KEY:
-        raise ValueError("La variable de entorno GROQ_API_KEY no está definida.")
+        print("No se encontró la clave GROQ_API_KEY.")
+        return ""
+    # Esta es la dirección a donde vamos a mandar el mensaje
     url = "https://api.groq.com/openai/v1/chat/completions"
+    # Esto dice quiénes somos y qué tipo de datos enviamos
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
-
-    # Define el modelo a utilizar
-    modelo = "llama3-8b-8192"
-
-    # Prepara el mensaje del usuario en el formato requerido por la API
-    mensajes = [
-        {
-            "role": "user",
-            "content": mensaje_usuario
-        }
-    ]
-
-    # Construye el diccionario de datos para la petición
-    data = {
-        "model": modelo,
-        "messages": mensajes
+    # Preparamos el mensaje para la IA
+    datos = {
+        "model": "llama3-8b-8192",
+        "messages": [
+            {
+                "role": "user",
+                "content": mensaje
+            }
+        ]
     }
-
-    response = requests.post(url, headers=headers, json=data)
-    response.raise_for_status()
-    respuesta_json = response.json()
-    # Extrae el texto de la respuesta del modelo
+    # Enviamos el mensaje y recibimos la respuesta
+    respuesta = requests.post(url, headers=headers, json=datos)
+    respuesta.raise_for_status()
+    respuesta_json = respuesta.json()
+    # Sacamos el texto que nos dio la IA
     return respuesta_json["choices"][0]["message"]["content"]
 
-def guardar_texto_como_audio(texto, nombre_archivo="respuesta.wav"):
-#Convierte el texto recibido en un archivo de audio (.wav) usando ElevenLabs.
+
+# Función para convertir texto en audio
+
+def texto_a_audio(texto, nombre_archivo="respuesta.wav"):
+    # Si no tenemos la llave, mostramos un error
     if not ELEVENLABS_API_KEY:
-        raise ValueError("La variable de entorno ELEVENLABS_API_KEY no está definida.")
+        print("No se encontró la clave ELEVENLABS_API_KEY.")
+        return
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
     headers = {
         "xi-api-key": ELEVENLABS_API_KEY,
         "Content-Type": "application/json",
         "Accept": "audio/wav"
     }
-    data = {
-        "text": texto
-    }
-    response = requests.post(url, headers=headers, json=data)
-    response.raise_for_status()
-    with open(nombre_archivo, "wb") as f:
-        f.write(response.content)
-    print(f"Audio guardado como {nombre_archivo}")
+    datos = {"text": texto}
+    respuesta = requests.post(url, headers=headers, json=datos)
+    respuesta.raise_for_status()
+    # Guardamos el audio en la computadora
+    with open(nombre_archivo, "wb") as archivo:
+        archivo.write(respuesta.content)
+    print(f"Se guardó el audio como '{nombre_archivo}'")
 
+
+# Programa principal:
 def main():
-    print("Escribe tu mensaje para el agente (o 'salir' para terminar):")
-    contador = 1
+    print("Escribe un mensaje (o escribe 'salir' para terminar):")
+    numero = 1
     while True:
         mensaje = input("> ")
         if mensaje.lower() == "salir":
+            print("¡Hasta luego!")
             break
-        respuesta_agente = obtener_respuesta_groq(mensaje)
-        print(f"Agente: {respuesta_agente}")
-        nombre_archivo = f"respuesta_{contador}.wav"
-        guardar_texto_como_audio(respuesta_agente, nombre_archivo)
-        contador += 1
+        respuesta = pedir_respuesta(mensaje)
+        print("IA:", respuesta)
+        archivo_audio = f"respuesta_{numero}.wav"
+        texto_a_audio(respuesta, archivo_audio)
+        numero += 1
 
+# Este es el punto de inicio del programa
 if __name__ == "__main__":
     main()
