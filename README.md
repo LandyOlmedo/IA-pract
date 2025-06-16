@@ -120,7 +120,7 @@ app = Flask(__name__)
 
 # Tus claves (guarda esto en variables de entorno en producción)
 ELEVENLABS_API_KEY = "sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72"
-VOICE_ID = "gbTn1bmCvNgk0QEAVyfM"  # Puedes elegir alguna voz de ElevenLabs
+VOICE_ID = "awd"  # Puedes elegir alguna voz de ElevenLabs
 
 # Lista de historias de terror predefinidas
 stories = [

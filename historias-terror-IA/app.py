@@ -1,41 +1,79 @@
 import os
-import signal
-import sys
+import requests
 
-from elevenlabs.client import ElevenLabs
-from elevenlabs.conversational_ai.conversation import Conversation
-from elevenlabs.conversational_ai.default_audio_interface import DefaultAudioInterface
+# Obtiene las API Keys y el ID de voz desde variables de entorno
+GROQ_API_KEY = os.environ.get('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')
+ELEVENLABS_API_KEY = os.environ.get('sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72')
+VOICE_ID = 'gbTn1bmCvNgk0QEAVyfM'  # Cambia por tu voice_id real de ElevenLabs
+
+def obtener_respuesta_groq(mensaje_usuario):
+    """
+    Envía el mensaje del usuario a la API de Groq y devuelve la respuesta generada por el modelo.
+    """
+    if not GROQ_API_KEY:
+        raise ValueError("La variable de entorno GROQ_API_KEY no está definida.")
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    # Define el modelo a utilizar
+    modelo = "llama3-8b-8192"
+
+    # Prepara el mensaje del usuario en el formato requerido por la API
+    mensajes = [
+        {
+            "role": "user",
+            "content": mensaje_usuario
+        }
+    ]
+
+    # Construye el diccionario de datos para la petición
+    data = {
+        "model": modelo,
+        "messages": mensajes
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    response.raise_for_status()
+    respuesta_json = response.json()
+    # Extrae el texto de la respuesta del modelo
+    return respuesta_json["choices"][0]["message"]["content"]
+
+def guardar_texto_como_audio(texto, nombre_archivo="respuesta.wav"):
+    """
+    Convierte el texto recibido en un archivo de audio (.wav) usando ElevenLabs.
+    """
+    if not ELEVENLABS_API_KEY:
+        raise ValueError("La variable de entorno ELEVENLABS_API_KEY no está definida.")
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
+    headers = {
+        "xi-api-key": ELEVENLABS_API_KEY,
+        "Content-Type": "application/json",
+        "Accept": "audio/wav"
+    }
+    data = {
+        "text": texto
+    }
+    response = requests.post(url, headers=headers, json=data)
+    response.raise_for_status()
+    with open(nombre_archivo, "wb") as f:
+        f.write(response.content)
+    print(f"Audio guardado como {nombre_archivo}")
 
 def main():
-    AGENT_ID=os.environ.get('AGENT_ID')
-    API_KEY=os.environ.get('ELEVENLABS_API_KEY')
+    print("Escribe tu mensaje para el agente (o 'salir' para terminar):")
+    contador = 1
+    while True:
+        mensaje = input("> ")
+        if mensaje.lower() == "salir":
+            break
+        respuesta_agente = obtener_respuesta_groq(mensaje)
+        print(f"Agente: {respuesta_agente}")
+        nombre_archivo = f"respuesta_{contador}.wav"
+        guardar_texto_como_audio(respuesta_agente, nombre_archivo)
+        contador += 1
 
-    if not AGENT_ID:
-        sys.stderr.write("AGENT_ID environment variable must be set\n")
-        sys.exit(1)
-    
-    if not API_KEY:
-        sys.stderr.write("ELEVENLABS_API_KEY not set, assuming the agent is public\n")
-
-    client = ElevenLabs(api_key=API_KEY)
-    conversation = Conversation(
-        client,
-        AGENT_ID,
-        # Assume auth is required when API_KEY is set
-        requires_auth=bool(API_KEY),
-        audio_interface=DefaultAudioInterface(),
-        callback_agent_response=lambda response: print(f"Agent: {response}"),
-        callback_agent_response_correction=lambda original, corrected: print(f"Agent: {original} -> {corrected}"),
-        callback_user_transcript=lambda transcript: print(f"User: {transcript}"),
-        # callback_latency_measurement=lambda latency: print(f"Latency: {latency}ms"),
-    )
-    conversation.start_session()
-
-    # Run until Ctrl+C is pressed.
-    signal.signal(signal.SIGINT, lambda sig, frame: conversation.end_session())
-
-    conversation_id = conversation.wait_for_session_end()
-    print(f"Conversation ID: {conversation_id}")
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
