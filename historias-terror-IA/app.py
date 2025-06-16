@@ -2,14 +2,12 @@ import os
 import requests
 
 # Obtiene las API Keys y el ID de voz desde variables de entorno
-GROQ_API_KEY = os.environ.get('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')
-ELEVENLABS_API_KEY = os.environ.get('sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72')
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY')
 VOICE_ID = 'gbTn1bmCvNgk0QEAVyfM'  # Cambia por tu voice_id real de ElevenLabs
 
 def obtener_respuesta_groq(mensaje_usuario):
-    """
-    Envía el mensaje del usuario a la API de Groq y devuelve la respuesta generada por el modelo.
-    """
+#Envía el mensaje del usuario a la API de Groq y devuelve la respuesta generada por el modelo.
     if not GROQ_API_KEY:
         raise ValueError("La variable de entorno GROQ_API_KEY no está definida.")
     url = "https://api.groq.com/openai/v1/chat/completions"
@@ -42,9 +40,7 @@ def obtener_respuesta_groq(mensaje_usuario):
     return respuesta_json["choices"][0]["message"]["content"]
 
 def guardar_texto_como_audio(texto, nombre_archivo="respuesta.wav"):
-    """
-    Convierte el texto recibido en un archivo de audio (.wav) usando ElevenLabs.
-    """
+#Convierte el texto recibido en un archivo de audio (.wav) usando ElevenLabs.
     if not ELEVENLABS_API_KEY:
         raise ValueError("La variable de entorno ELEVENLABS_API_KEY no está definida.")
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
