@@ -1,5 +1,9 @@
+from flask import Flask, render_template, request, send_from_directory, flash
 import os
 import requests
+
+app = Flask(__name__)
+app.secret_key = 'historia-terror-ia'
 
 # Configuración:
 # Aquí guardamos nuestras llaves secretas para usar las APIs
@@ -12,8 +16,7 @@ VOICE_ID = 'gbTn1bmCvNgk0QEAVyfM'  # Cambia este por el tuyo si tienes otro
 def pedir_respuesta(mensaje):
     # Si no tenemos la llave, mostramos un error
     if not GROQ_API_KEY:
-        print("No se encontró la clave GROQ_API_KEY.")
-        return ""
+        return None, "No se encontró la clave GROQ_API_KEY."
     # Esta es la dirección a donde vamos a mandar el mensaje
     url = "https://api.groq.com/openai/v1/chat/completions"
     # Esto dice quiénes somos y qué tipo de datos enviamos
@@ -31,21 +34,22 @@ def pedir_respuesta(mensaje):
             }
         ]
     }
-    # Enviamos el mensaje y recibimos la respuesta
-    respuesta = requests.post(url, headers=headers, json=datos)
-    respuesta.raise_for_status()
-    respuesta_json = respuesta.json()
-    # Sacamos el texto que nos dio la IA
-    return respuesta_json["choices"][0]["message"]["content"]
-
+    try:
+        # Enviamos el mensaje y recibimos la respuesta
+        respuesta = requests.post(url, headers=headers, json=datos, timeout=20)
+        respuesta.raise_for_status()
+        respuesta_json = respuesta.json()
+        # Sacamos el texto que nos dio la IA
+        return respuesta_json["choices"][0]["message"]["content"], None
+    except Exception as e:
+        return None, f"Error al conectar con la API de Groq: {e}"
 
 # Función para convertir texto en audio
 
 def texto_a_audio(texto, nombre_archivo="respuesta.wav"):
     # Si no tenemos la llave, mostramos un error
     if not ELEVENLABS_API_KEY:
-        print("No se encontró la clave ELEVENLABS_API_KEY.")
-        return
+        return None, "No se encontró la clave ELEVENLABS_API_KEY."
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
     headers = {
         "xi-api-key": ELEVENLABS_API_KEY,
@@ -53,29 +57,38 @@ def texto_a_audio(texto, nombre_archivo="respuesta.wav"):
         "Accept": "audio/wav"
     }
     datos = {"text": texto}
-    respuesta = requests.post(url, headers=headers, json=datos)
-    respuesta.raise_for_status()
-    # Guardamos el audio en la computadora
-    with open(nombre_archivo, "wb") as archivo:
-        archivo.write(respuesta.content)
-    print(f"Se guardó el audio como '{nombre_archivo}'")
+    try:
+        respuesta = requests.post(url, headers=headers, json=datos, timeout=20)
+        respuesta.raise_for_status()
+        # Guardamos el audio en la computadora
+        with open(os.path.join("static", nombre_archivo), "wb") as archivo:
+            archivo.write(respuesta.content)
+        return nombre_archivo, None
+    except Exception as e:
+        return None, f"Error al generar el audio: {e}"
 
+# Rutas de la aplicación web
 
-# Programa principal:
-def main():
-    print("Escribe un mensaje (o escribe 'salir' para terminar):")
-    numero = 1
-    while True:
-        mensaje = input("> ")
-        if mensaje.lower() == "salir":
-            print("¡Hasta luego!")
-            break
-        respuesta = pedir_respuesta(mensaje)
-        print("IA:", respuesta)
-        archivo_audio = f"respuesta_{numero}.wav"
-        texto_a_audio(respuesta, archivo_audio)
-        numero += 1
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    respuesta = None
+    audio_file = None
+    if request.method == 'POST':
+        mensaje = request.form.get('mensaje')
+        if mensaje:
+            respuesta, error_ia = pedir_respuesta(mensaje)
+            if error_ia:
+                flash(error_ia, 'error')
+            elif respuesta:
+                audio_file, error_audio = texto_a_audio(respuesta, "respuesta_1.wav")
+                if error_audio:
+                    flash(error_audio, 'error')
+    return render_template('index.html', respuesta=respuesta, audio_file=audio_file)
+
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory('static', filename)
 
 # Este es el punto de inicio del programa
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    app.run(debug=True)

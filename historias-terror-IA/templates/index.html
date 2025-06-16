@@ -1,0 +1,47 @@
+$def with () 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historias de Terror IA</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #fff; color: #222; margin: 0; padding: 0; }
+        .container { max-width: 400px; margin: 30px auto; padding: 16px; }
+        h1 { text-align: center; font-size: 1.1em; }
+        label { font-size: 1em; }
+        textarea { width: 100%; min-height: 50px; margin-bottom: 8px; }
+        button { width: 100%; padding: 8px; }
+        .respuesta { background: #eee; padding: 8px; margin: 10px 0; }
+        .audio-box { margin: 8px 0; text-align: center; }
+        .flash { background: #f99; color: #222; padding: 6px; margin-bottom: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Historias de Terror IA</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form method="post">
+            <label for="mensaje">Mensaje:</label>
+            <textarea id="mensaje" name="mensaje" required></textarea>
+            <button type="submit">Enviar</button>
+        </form>
+        {% if respuesta %}
+            <div class="respuesta">{{ respuesta }}</div>
+        {% endif %}
+        {% if audio_file %}
+        <div class="audio-box">
+            <audio controls>
+                <source src="/static/{{ audio_file }}" type="audio/wav">
+                Tu navegador no soporta el elemento de audio.
+            </audio>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
