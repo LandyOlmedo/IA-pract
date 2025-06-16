@@ -165,3 +165,55 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
+
+
+
+
+
+
+
+
+
+import os
+import signal
+import sys
+import web
+
+from elevenlabs.client import ElevenLabs
+from elevenlabs.conversational_ai.conversation import Conversation
+from elevenlabs.conversational_ai.default_audio_interface import DefaultAudioInterface
+
+def main():
+    AGENT_ID=os.environ.get('agent_01jxqt5q71e4ksph7x34p82wk0')
+    API_KEY=os.environ.get('sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72')
+
+    if not AGENT_ID:
+        sys.stderr.write("agent_01jxqt5q71e4ksph7x34p82wk0 environment variable must be set\n")
+        sys.exit(1)
+    
+    if not API_KEY:
+        sys.stderr.write("sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72 not set, assuming the agent is public\n")
+
+    client = ElevenLabs(api_key=sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72)
+    conversation = Conversation(
+        client,
+        AGENT_ID,
+        # Assume auth is required when API_KEY is set
+        requires_auth=bool(sk_707095e9ab968862b09b6edfc4c65c100d65d06ad75dae72),
+        audio_interface=DefaultAudioInterface(),
+        callback_agent_response=lambda response: print(f"Agent: {response}"),
+        callback_agent_response_correction=lambda original, corrected: print(f"Agent: {original} -> {corrected}"),
+        callback_user_transcript=lambda transcript: print(f"User: {transcript}"),
+        # callback_latency_measurement=lambda latency: print(f"Latency: {latency}ms"),
+    )
+    conversation.start_session()
+
+    # Run until Ctrl+C is pressed.
+    signal.signal(signal.SIGINT, lambda sig, frame: conversation.end_session())
+
+    conversation_id = conversation.wait_for_session_end()
+    print(f"Conversation ID: {conversation_id}")
+
+if _name_ == '_main_':
+    main()
