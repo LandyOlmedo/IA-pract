@@ -34,13 +34,15 @@ $def with ()
         {% if respuesta %}
             <div class="respuesta">{{ respuesta }}</div>
         {% endif %}
-        {% if audio_file %}
-        <div class="audio-box">
-            <audio controls>
-                <source src="/static/{{ audio_file }}" type="audio/wav">
-                Tu navegador no soporta el elemento de audio.
-            </audio>
-        </div>
+        {% if audio_files %}
+            {% for audio in audio_files %}
+            <div class="audio-box">
+                <audio controls>
+                    <source src="/static/{{ audio }}" type="audio/wav">
+                    Tu navegador no soporta el elemento de audio.
+                </audio>
+            </div>
+            {% endfor %}
         {% endif %}
     </div>
 </body>

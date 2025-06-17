@@ -1,11 +1,10 @@
-from flask import Flask, render_template, request, send_from_directory, flash
+from flask import Flask, render_template, request, send_from_directory, flash, session
 import os
 import requests
 
 app = Flask(__name__)
 app.secret_key = 'historia-terror-ia'
 
-# Configuración:
 # Aquí guardamos nuestras llaves secretas para usar las APIs
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
 ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY')
@@ -72,7 +71,8 @@ def texto_a_audio(texto, nombre_archivo="respuesta.wav"):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     respuesta = None
-    audio_file = None
+    if 'audio_files' not in session:
+        session['audio_files'] = []
     if request.method == 'POST':
         mensaje = request.form.get('mensaje')
         if mensaje:
@@ -80,10 +80,13 @@ def index():
             if error_ia:
                 flash(error_ia, 'error')
             elif respuesta:
-                audio_file, error_audio = texto_a_audio(respuesta, "respuesta_1.wav")
+                audio_file, error_audio = texto_a_audio(respuesta, f"respuesta_{len(session['audio_files'])+1}.wav")
                 if error_audio:
                     flash(error_audio, 'error')
-    return render_template('index.html', respuesta=respuesta, audio_file=audio_file)
+                else:
+                    session['audio_files'].append(audio_file)
+                    session.modified = True
+    return render_template('index.html', respuesta=respuesta, audio_files=session.get('audio_files', []))
 
 @app.route('/static/<path:filename>')
 def static_files(filename):
