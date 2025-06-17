@@ -126,7 +126,3 @@ Define el tipo de documento y el idioma principal como español.
 - Finaliza el contenedor principal, el cuerpo y el documento HTML.
 
 ---
-
-## Resumen
-
-Esta plantilla HTML crea una interfaz sencilla y moderna para interactuar con una IA que responde mensajes y puede generar audio. Incluye manejo de errores, muestra la respuesta de la IA y permite reproducir el audio generado, todo integrado con Flask y Jinja2.
