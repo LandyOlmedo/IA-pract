@@ -35,7 +35,7 @@ def pedir_respuesta(mensaje):
     }
     try:
         # Enviamos el mensaje y recibimos la respuesta
-        respuesta = requests.post(url, headers=headers, json=datos, timeout=20)
+        respuesta = requests.post(url, headers=headers, json=datos)
         respuesta.raise_for_status()
         respuesta_json = respuesta.json()
         # Sacamos el texto que nos dio la IA
@@ -57,7 +57,7 @@ def texto_a_audio(texto, nombre_archivo="respuesta.wav"):
     }
     datos = {"text": texto}
     try:
-        respuesta = requests.post(url, headers=headers, json=datos, timeout=20)
+        respuesta = requests.post(url, headers=headers, json=datos)
         respuesta.raise_for_status()
         # Guardamos el audio en la computadora
         with open(os.path.join("static", nombre_archivo), "wb") as archivo:
