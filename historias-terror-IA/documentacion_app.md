@@ -52,19 +52,19 @@ def pedir_respuesta(mensaje):
   Define una función que le manda un mensaje a la IA y regresa la respuesta.
 - **`if not GROQ_API_KEY:`**  
   Si no hay clave, muestra un mensaje de error y sale de la función.
-- **`url = ...`**  
+- **`url =`**  
   Es la dirección de internet a la que se manda el mensaje para hablar con la IA.
-- **`headers = {...}`**  
+- **`headers = {}`**  
   Indica quién eres (con tu clave) y el tipo de datos que mandas (JSON).
-- **`datos = {...}`**  
+- **`datos = {}`**  
   Prepara el mensaje para la IA, diciendo qué modelo usar y el contenido del mensaje.
-- **`respuesta = requests.post(...)`**  
+- **`respuesta = requests.post()`**  
   Manda los datos a la IA y guarda la respuesta.
 - **`respuesta.raise_for_status()`**  
   Si hubo un error al enviar/recibir, detiene el programa y avisa.
 - **`respuesta_json = respuesta.json()`**  
   Convierte la respuesta que da la IA a un formato que Python entiende.
-- **`return ...`**  
+- **`return`**  
   Saca el texto de la respuesta de la IA y lo devuelve.
 
 ### 4. Función para convertir texto en audio
@@ -97,13 +97,13 @@ def texto_a_audio(texto, nombre_archivo="respuesta.wav"):
   Define una función que convierte un texto en audio y lo guarda en un archivo.
 - **`if not ELEVENLABS_API_KEY:`**  
   Si no hay clave, muestra un mensaje de error y sale de la función.
-- **`url = ...`**  
+- **`url =`**  
   Es la dirección de internet a la que se manda el texto para convertirlo en audio.
-- **`headers = {...}`**  
+- **`headers = {}`**  
   Indica tu clave secreta y el formato de datos y audio que quieres.
-- **`datos = {"text": texto}`**  
+- **`datos = {}`**  
   Prepara el texto que quieres convertir en voz.
-- **`respuesta = requests.post(...)`**  
+- **`respuesta = requests.post()`**  
   Manda el texto a ElevenLabs y recibe el audio.
 - **`respuesta.raise_for_status()`**  
   Si hubo un error, detiene el programa y avisa.
@@ -111,7 +111,7 @@ def texto_a_audio(texto, nombre_archivo="respuesta.wav"):
   Abre (o crea) un archivo para guardar el audio.
 - **`archivo.write(respuesta.content)`**  
   Escribe el audio recibido en el archivo.
-- **`print(f"...")`**  
+- **`print()`**  
   Muestra un mensaje avisando que el archivo de audio fue guardado.
 
 ### 5. Ruta principal de la app web
