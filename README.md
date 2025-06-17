@@ -1,6 +1,3 @@
 # IA-pract
-#
-Primero, buscamos más que nada un proyecto interesante, en el cual queremos que nuestra IA pueda contarnos historias de terror, especificamente sobre México, la que sea, aunque sabemos perfectamente que no nos gustaría que simplemente le escribamos y esta nos platique lo que le decimos, sino que queremos que nuestra IA nos escuche y esta nos pueda platicar leyendas de terror mexicanas
 
-Para ello, hicimos algo arriesgado pero que podría salir satisfactorio, asi que nos movimos de la interfaz de IA "*Groq" y buscamos una adecuada para nuestro proyecto, es así que al investigar, nos movimos a "EvenLabs*".
-Esta plataforma nos podrá ayudar a hablarle a la *IA* y que está nos pueda contestar el "*prompt*".
+Para este proyecto, ocupamos 2 IAs que nos ayudarán a responder nuestro Prompt, en este caso, ocupamos la página web "Groq", que nos ayudo a comprender lo que queremos de respuesta y este nos responda de forma coherente nuestro Prompt, y otra donde lo que respondió el modelo de Groq, lo hablé o platique, que en este caso escogimos la voz desde la página "ElevenLabs", la cual nos ayudó a tener una voz que se escuchará con un buen acento en español México 
