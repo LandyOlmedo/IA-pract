@@ -1,4 +1,4 @@
-$def with () 
+$def with () Add commentMore actions
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,15 +34,21 @@ $def with ()
         {% if respuesta %}
             <div class="respuesta">{{ respuesta }}</div>
         {% endif %}
-        {% if audio_files %}
-            {% for audio in audio_files %}
-            <div class="audio-box">
-                <audio controls>
-                    <source src="/static/{{ audio }}" type="audio/wav">
-                    Tu navegador no soporta el elemento de audio.
-                </audio>
-            </div>
-            {% endfor %}
+        {% if audio_file %}
+        <div class="audio-box">
+            <audio id="audioRespuesta" controls autoplay>
+                <source src="/static/{{ audio_file }}?{{ range(1000000)|random }}" type="audio/wav">
+                Tu navegador no soporta el elemento de audio.
+            </audio>
+        </div>
+        <script>
+        // Forzar recarga del audio cuando cambia la respuesta
+        const audio = document.getElementById('audioRespuesta');
+        if (audio) {
+            audio.load();
+            audio.play();
+        }
+        </script>
         {% endif %}
     </div>
 </body>
